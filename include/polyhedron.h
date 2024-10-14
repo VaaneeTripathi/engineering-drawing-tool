@@ -20,6 +20,7 @@ typedef struct {
 Polyhedron* create_polyhedron(int vertex_count, int edge_count, int face_count);
 void add_vertex(Polyhedron *poly, float x, float y, float z);
 void add_edge(Polyhedron *poly, int start, int end);
+void add_face(Polyhedron *poly, int *edge_indices, int edge_count);
 void print_polyhedron(Polyhedron *poly);
 
 #endif // POLYHEDRON_H

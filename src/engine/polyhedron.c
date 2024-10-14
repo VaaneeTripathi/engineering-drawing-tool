@@ -33,9 +33,23 @@ void add_edge(Polyhedron *poly, int start, int end) {
     poly->edges[poly->edge_count++] = e;
 }
 
+// Add a face to the polyhedron using edge indices
+void add_face(Polyhedron *poly, int *edge_indices, int edge_count) {
+    Face *f = (Face *)malloc(sizeof(Face));
+    f->edges = (Edge **)malloc(edge_count * sizeof(Edge *));
+    f->edge_count = edge_count;
+
+    for (int i = 0; i < edge_count; i++) {
+        f->edges[i] = poly->edges[edge_indices[i]];
+    }
+
+    poly->faces[poly->face_count++] = f;
+}
+
 // Print the polyhedron's structure
 void print_polyhedron(Polyhedron *poly) {
-    printf("Polyhedron with %d vertices, %d edges:\n", poly->vertex_count, poly->edge_count);
+    printf("Polyhedron with %d vertices, %d edges, %d faces:\n", 
+           poly->vertex_count, poly->edge_count, poly->face_count);
 
     printf("Vertices:\n");
     for (int i = 0; i < poly->vertex_count; i++) {
@@ -47,6 +61,15 @@ void print_polyhedron(Polyhedron *poly) {
     for (int i = 0; i < poly->edge_count; i++) {
         printf("E%d: V%d -> V%d\n", i,
                poly->edges[i]->start_index, poly->edges[i]->end_index);
+    }
+
+    printf("Faces:\n");
+    for (int i = 0; i < poly->face_count; i++) {
+        printf("F%d: ", i);
+        for (int j = 0; j < poly->faces[i]->edge_count; j++) {
+            printf("E%d ", j);
+        }
+        printf("\n");
     }
 }
 
