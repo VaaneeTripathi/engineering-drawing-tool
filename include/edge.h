@@ -1,11 +1,10 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include "vertex.h"
-
 typedef struct {
-    Vertex *start;
-    Vertex *end;
+    int start_index;  // Store index of start vertex
+    int end_index;    // Store index of end vertex
 } Edge;
 
 #endif // EDGE_H
+
