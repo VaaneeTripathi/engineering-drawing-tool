@@ -6,9 +6,6 @@
 #include "face.h"
 #include "bsp_node.h"
 
-int is_duplicate_vertex(Polyhedron *poly, float x, float y, float z);
-int is_duplicate_edge(Polyhedron *poly, int start, int end);
-int validate_euler(Polyhedron *poly);
 
 typedef struct {
     Vertex **vertices;   // List of pointers to vertices
@@ -26,5 +23,7 @@ void add_vertex(Polyhedron *poly, float x, float y, float z);
 void add_edge(Polyhedron *poly, int start, int end);
 void add_face(Polyhedron *poly, int *edge_indices, int edge_count);
 void print_polyhedron(Polyhedron *poly);
-
+int is_valid_vertex(Polyhedron *poly, float x, float y, float z);
+int is_valid_edge(Polyhedron *poly, int start, int end);
+int validate_euler(Polyhedron *poly);
 #endif // POLYHEDRON_H
