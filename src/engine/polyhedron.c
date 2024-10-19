@@ -73,3 +73,40 @@ void print_polyhedron(Polyhedron *poly) {
     }
 }
 
+int is_valid_vertex(Polyhedron *poly, float x, float y, float z) {
+    for (int i = 0; i < poly->vertex_count; i++) {
+        Vertex *v = poly->vertices[i];
+        if (v->x == x && v->y == y && v->z == z) {
+            return 1;  // Duplicate found
+        }
+    }
+    return 0;  // No duplicate
+}
+
+int is_valid_edge(Polyhedron *poly, int start, int end) {
+    for (int i = 0; i < poly->edge_count; i++) {
+        Edge *e = poly->edges[i];
+        if ((e->start_index == start && e->end_index == end) ||
+            (e->start_index == end && e->end_index == start)) {
+            return 1;  // Duplicate found
+            if (start == end) {
+            printf("Invalid edge! Start and end vertices cannot be the same.\n");
+            continue;  // Retry input
+}
+        }
+    }
+    return 0;  // No duplicate
+}
+
+
+int validate_euler(Polyhedron *poly) {
+    int V = poly->vertex_count;
+    int E = poly->edge_count;
+    int F = poly->face_count;
+
+    if (V - E + F != 2) {
+        printf("Invalid polyhedron! Euler's formula V - E + F = 2 is not satisfied.\n");
+        return 0;  // Invalid
+    }
+    return 1;  // Valid
+}

@@ -31,6 +31,13 @@ int main() {
         float x, y, z;
         printf("Vertex V%d (x y z): ", i);
         scanf("%f %f %f", &x, &y, &z);
+
+        if (is_valid_vertex(poly, x, y, z)) {
+            printf("Duplicate vertex detected! Please enter unique coordinates.\n");
+            i--;  // Retry current vertex
+            continue;
+        }
+
         add_vertex(poly, x, y, z);
     }
 
@@ -40,11 +47,15 @@ int main() {
         printf("Edge E%d connects vertices (start end): ", i);
         scanf("%d %d", &start, &end);
 
-        // Validate edge input
-        if (start < 0 || start >= vertex_count || end < 0 || end >= vertex_count) {
-            printf("Invalid vertices! Please enter valid vertex indices.\n");
+        if (start == end) {
+            printf("Invalid edge! Start and end vertices cannot be the same.\n");
             i--;  // Retry current edge
-            clear_input();  // Clear buffer to avoid input issues
+            continue;
+        }
+
+        if (is_valid_edge(poly, start, end)) {
+            printf("Duplicate edge detected! Please enter unique edges.\n");
+            i--;  // Retry current edge
             continue;
         }
 
@@ -61,20 +72,19 @@ int main() {
         printf("Enter the edge indices for face F%d: ", i);
         for (int j = 0; j < edge_count; j++) {
             scanf("%d", &edges[j]);
-
-            // Validate edge index
-            if (edges[j] < 0 || edges[j] >= poly->edge_count) {
-                printf("Invalid edge index! Please enter a valid index.\n");
-                j--;  // Retry current edge
-                clear_input();  // Clear buffer to avoid input issues
-                continue;
-            }
         }
 
         add_face(poly, edges, edge_count);
         free(edges);
 
         printf("Face F%d defined with %d edges.\n", i, edge_count);
+    }
+
+    // Validate the polyhedron using Euler's formula
+    if (!validate_euler(poly)) {
+        printf("Error: The polyhedron does not satisfy Euler's formula. Exiting.\n");
+        free(poly);
+        return 1;  // Exit with failure
     }
 
     printf("\n--- Polyhedron Summary ---\n");
