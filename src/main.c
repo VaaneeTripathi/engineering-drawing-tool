@@ -71,12 +71,21 @@ void run_polyhedron_creation() {
     Polyhedron *poly = NULL;
 
     while (1) {
+
         switch (step) {
             case 1:
+                printf("\nWelcome to the Polyhedron Creation Tool!\n");
                 // Step 1: Get number of vertices
                 vertex_count = prompt_for_int("How many vertices?", 1, 100);
+                if (vertex_count < 3) {printf("Error: A polyhedron needs to have atleast 3 vertices\n");
+                    int choice = show_menu("What would you like to do?");
+                    if (choice == 1) { step = 1; continue; }  // Retry from start
+                    if (choice == 2) { step--; continue; }    // Go back
+                    if (choice == 3) exit(0);
+                }
                 if (vertex_count == -2) { step = 1; continue; }  // Retry
                 if (vertex_count == -1) { step = 1; continue; }  // Go back
+
                 step++;  // Move to the next step
                 break;
 
