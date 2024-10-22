@@ -110,3 +110,13 @@ int validate_euler(Polyhedron *poly) {
     }
     return 1;  // Valid
 }
+
+// Function to scale the polyhedron by a factor for each axis
+void scale_polyhedron(Polyhedron *poly, float scale_x, float scale_y, float scale_z) {
+    for (int i = 0; i < poly->vertex_count; i++) {
+        poly->vertices[i]->x *= scale_x;
+        poly->vertices[i]->y *= scale_y;
+        poly->vertices[i]->z *= scale_z;
+    }
+    printf("Polyhedron scaled successfully.\n");
+}

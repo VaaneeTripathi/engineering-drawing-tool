@@ -64,6 +64,15 @@ int validate_edge_count(int vertex_count, int edge_count) {
     return 1;
 }
 
+// Command to handle scaling the polyhedron
+void handle_scale_command(Polyhedron *poly) {
+    float scale_x, scale_y, scale_z;
+    printf("Enter the scaling factors (scale_x scale_y scale_z): ");
+    scanf("%f %f %f", &scale_x, &scale_y, &scale_z);
+    scale_polyhedron(poly, scale_x, scale_y, scale_z);
+}
+
+
 // Main polyhedron creation function with "Go Back" functionality
 void run_polyhedron_creation() {
     int step = 1;  // Track the current step
@@ -219,11 +228,57 @@ void run_polyhedron_creation() {
                 free(poly);
                 return;  // Exit the function after successful completion
         }
-    }
+    }}
+
+void run_commands(Polyhedron* poly) {
+    while (1) {
+        const char *message;
+        int command = show_menu(message);
+        switch (command) {
+            case 1:
+                printf("Creating a new polyhedron...\n");
+                run_polyhedron_creation();
+                break;
+            case 2:
+                printf("Scaling polyhedron...\n");
+                float scale_x; float scale_y; float scale_z;
+                printf("Enter scale factor: ");
+                scanf("%f %f %f", &scale_x, &scale_y, &scale_z);
+                scale_polyhedron(poly, scale_x, scale_y, scale_z );
+                break;
+            // case 3:
+            //     printf("Translating polyhedron...\n");
+            //     float tx, ty, tz;
+            //     printf("Enter translation (x y z): ");
+            //     scanf("%f %f %f", &tx, &ty, &tz);
+            //     translate_polyhedron(poly, tx, ty, tz);
+            //     break;
+            // case 4:
+            //     printf("Rotating polyhedron...\n");
+            //     float angle, rx, ry, rz;
+            //     printf("Enter rotation angle (in degrees): ");
+            //     scanf("%f", &angle);
+            //     printf("Enter rotation axis (x y z): ");
+            //     scanf("%f %f %f", &rx, &ry, &rz);
+            //     rotate_polyhedron(poly, angle, rx, ry, rz);
+            //     break;
+            // case 5:
+            //     printf("Printing polyhedron...\n");
+            //     print_polyhedron(poly);
+            //     break;
+            // case 6:
+            //     printf("Exiting...\n");
+            //     free(poly);
+            //     exit(0);
+            default:
+                printf("Invalid command. Try again.\n");
+         } }
 }
 
 int main() {
-    signal(SIGINT, handle_interrupt);
+    signal(SIGINT, handle_interrupt);  // Handle Ctrl+C gracefully
+    Polyhedron *poly = create_polyhedron(0, 0, 0);  // Initialize empty polyhedron
     run_polyhedron_creation();
+    run_commands(poly);  // Start command execution
     return 0;
 }
