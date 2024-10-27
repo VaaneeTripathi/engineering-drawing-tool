@@ -65,7 +65,7 @@ int validate_edge_count(int vertex_count, int edge_count) {
 }
 
 // Main polyhedron creation loop
-void run_polyhedron_creation() {
+Polyhedron *run_polyhedron_creation() {
     int step = 1;  // Track the current step
 
     int vertex_count = 0, edge_count = 0, face_count = 0;
@@ -183,21 +183,36 @@ void run_polyhedron_creation() {
     if (!validate_euler(poly)) {
         printf("Error: Euler's formula not satisfied.\n");
         free(poly);
-        return;
     }
 
     printf("\n--- Polyhedron Summary ---\n");
     print_polyhedron(poly);
 
-    // Cleanup
+    return poly;
+}
+
+// Testing scaling
+void test_scaling(Polyhedron *poly) {
+    float scale_factor_x;
+    float scale_factor_y;
+    float scale_factor_z;
+    printf("Enter the scaling factor: ");
+    scanf("%f %f %f", &scale_factor_x, &scale_factor_y, &scale_factor_z);
+
+    scale_polyhedron(poly, scale_factor_x, scale_factor_y, scale_factor_z);
+    printf("\n--- Polyhedron After Scaling ---\n");
+    print_polyhedron(poly);
+}
+
+
+int main() {
+    signal(SIGINT, handle_interrupt);  // Handle Ctrl+C gracefully
+    Polyhedron* poly = run_polyhedron_creation();         // Start the process
+    test_scaling(poly);
+        // Cleanup
     free(poly->vertices);
     free(poly->edges);
     free(poly->faces);
     free(poly);
-}
-
-int main() {
-    signal(SIGINT, handle_interrupt);  // Handle Ctrl+C gracefully
-    run_polyhedron_creation();         // Start the process
     return 0;
 }
