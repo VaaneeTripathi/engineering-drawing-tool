@@ -231,6 +231,17 @@ void test_rotation(Polyhedron *poly) {
     print_polyhedron(poly);
 }
 
+// Function to test oblique cross-section
+void test_cross_section_oblique(Polyhedron *poly) {
+    float px, py, pz, nx, ny, nz;
+    printf("Enter a point on the cross-section plane (px py pz): ");
+    scanf("%f %f %f", &px, &py, &pz);
+    printf("Enter the normal vector of the plane (nx ny nz): ");
+    scanf("%f %f %f", &nx, &ny, &nz);
+
+    cross_section_oblique(poly, px, py, pz, nx, ny, nz);
+}
+
 
 int main() {
     signal(SIGINT, handle_interrupt);  // Handle Ctrl+C gracefully
@@ -238,6 +249,12 @@ int main() {
     test_scaling(poly);
     test_translation(poly);
     test_rotation(poly);      // Apply rotation
+
+
+    top_view_projection(poly);         // Top view projection
+    front_view_projection(poly);       // Front view projection
+    side_view_projection(poly);        // Side view projection
+    test_cross_section_oblique(poly);  // Oblique cross-section
         
     // Cleanup
     free(poly->vertices);

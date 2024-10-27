@@ -166,3 +166,72 @@ void rotate_polyhedron(Polyhedron *poly, float angle, char axis) {
         }
     }
 }
+
+// Function to generate a top view projection (XY plane)
+void top_view_projection(Polyhedron *poly) {
+    printf("\n--- Top View (Projection onto XY plane) ---\n");
+    for (int i = 0; i < poly->vertex_count; i++) {
+        printf("Vertex V%d: (%.2f, %.2f)\n", i, poly->vertices[i]->x, poly->vertices[i]->y);
+    }
+}
+
+// Function to generate a front view projection (YZ plane)
+void front_view_projection(Polyhedron *poly) {
+    printf("\n--- Front View (Projection onto YZ plane) ---\n");
+    for (int i = 0; i < poly->vertex_count; i++) {
+        printf("Vertex V%d: (%.2f, %.2f)\n", i, poly->vertices[i]->y, poly->vertices[i]->z);
+    }
+}
+
+// Function to generate a side view projection (XZ plane)
+void side_view_projection(Polyhedron *poly) {
+    printf("\n--- Side View (Projection onto XZ plane) ---\n");
+    for (int i = 0; i < poly->vertex_count; i++) {
+        printf("Vertex V%d: (%.2f, %.2f)\n", i, poly->vertices[i]->x, poly->vertices[i]->z);
+    }
+}
+
+// Function to calculate cross-section with an oblique plane
+// Plane is defined by a point (px, py, pz) and a normal vector (nx, ny, nz)
+void cross_section_oblique(Polyhedron *poly, float px, float py, float pz, float nx, float ny, float nz) {
+    printf("\n--- Cross-Section at Oblique Angle ---\n");
+    
+    for (int i = 0; i < poly->edge_count; i++) {
+        Vertex *v1 = poly->vertices[poly->edges[i]->start_index];
+        Vertex *v2 = poly->vertices[poly->edges[i]->end_index];
+
+        // Debug print for vertices
+        printf("Edge %d: Start Vertex (%.2f, %.2f, %.2f), End Vertex (%.2f, %.2f, %.2f)\n", i, v1->x, v1->y, v1->z, v2->x, v2->y, v2->z);
+
+        // Direction vector of the edge
+        float dx = v2->x - v1->x;
+        float dy = v2->y - v1->y;
+        float dz = v2->z - v1->z;
+
+        // Print direction vector
+        printf("Direction vector of edge %d: (%.2f, %.2f, %.2f)\n", i, dx, dy, dz);
+
+        // Dot product to find the t parameter for the line-plane intersection
+        float dot1 = nx * (px - v1->x) + ny * (py - v1->y) + nz * (pz - v1->z);
+        float dot2 = nx * dx + ny * dy + nz * dz;
+
+        // Print dot products
+        printf("Edge %d: dot1 = %.2f, dot2 = %.2f\n", i, dot1, dot2);
+
+        if (fabs(dot2) > 1e-6) {  // Avoid division by zero
+            float t = dot1 / dot2;
+            printf("Edge %d: t = %.2f\n", i, t);
+
+            if (t >= 0.0 && t <= 1.0) {  // Intersection point lies on the edge
+                float ix = v1->x + t * dx;
+                float iy = v1->y + t * dy;
+                float iz = v1->z + t * dz;
+                printf("Intersection at Edge %d: (%.2f, %.2f, %.2f)\n", i, ix, iy, iz);
+            } else {
+                printf("No intersection on Edge %d (t is out of range)\n", i);
+            }
+        } else {
+            printf("Edge %d is parallel to the plane, no intersection\n", i);
+        }
+    }
+}

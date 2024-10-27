@@ -29,4 +29,9 @@ int validate_euler(Polyhedron *poly);
 void scale_polyhedron(Polyhedron *poly, float scale_x, float scale_y, float scale_z) ;
 void translate_polyhedron(Polyhedron *poly, float dx, float dy, float dz); 
 void rotate_polyhedron(Polyhedron *poly, float angle, char axis);
+void top_view_projection(Polyhedron *poly);
+void front_view_projection(Polyhedron *poly);
+void side_view_projection(Polyhedron *poly);
+void cross_section_oblique(Polyhedron *poly, float px, float py, float pz, float nx, float ny, float nz);
+
 #endif // POLYHEDRON_H
