@@ -1,6 +1,8 @@
 #include <math.h>
 #include "../../include/polyhedron.h"
 #include "../../include/edge.h"
+#include "../../include/vertex.h"
+#include "../../include/polygon.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -233,5 +235,48 @@ void cross_section_oblique(Polyhedron *poly, float px, float py, float pz, float
         } else {
             printf("Edge %d is parallel to the plane, no intersection\n", i);
         }
+    }
+}
+
+// Function to classify edge visibility using the BSP tree
+void classify_edge_visibility(BSPNode *node, Vertex viewer_position) {
+    if (!node) return;
+
+    // Calculate vector from face centroid to viewer position
+    Vertex normal = node->face->normal;  // Use face normal for orientation
+    Vertex to_viewer = {
+        viewer_position.x - node->face->centroid.x,
+        viewer_position.y - node->face->centroid.y,
+        viewer_position.z - node->face->centroid.z
+    };
+
+    // Dot product to determine if the face is facing the viewer
+    float dot_product = normal.x * to_viewer.x + normal.y * to_viewer.y + normal.z * to_viewer.z;
+
+    if (dot_product > 0) {  // If positive, face is toward the viewer
+        // Traverse the left (front) subtree first
+        classify_edge_visibility(node->left, viewer_position);
+
+        // Set all edges as visible for faces facing the viewer
+        for (int i = 0; i < node->face->edge_count; i++) {
+            node->face->edges[i]->is_visible = 1;  // Use -> to access is_visible
+            printf("Edge %d of face marked as visible.\n", i);
+        }
+
+        // Traverse the right (back) subtree after processing the front
+        classify_edge_visibility(node->right, viewer_position);
+
+    } else {  // If negative, face is away from the viewer
+        // Traverse the right (back) subtree first
+        classify_edge_visibility(node->right, viewer_position);
+
+        // Set all edges as hidden for faces facing away from the viewer
+        for (int i = 0; i < node->face->edge_count; i++) {
+            node->face->edges[i]->is_visible = 0;
+            printf("Edge %d of face marked as hidden.\n", i);
+        }
+
+        // Traverse the left (front) subtree after processing the back
+        classify_edge_visibility(node->left, viewer_position);
     }
 }

@@ -243,6 +243,14 @@ void test_cross_section_oblique(Polyhedron *poly) {
 }
 
 
+Vertex get_viewer_position(){
+    Vertex viewer_position;
+    printf("What is the viewer position?");
+    scanf("%f %f %f", &viewer_position.x, &viewer_position.y, &viewer_position.z);
+    return viewer_position;
+
+}
+
 int main() {
     signal(SIGINT, handle_interrupt);  // Handle Ctrl+C gracefully
     Polyhedron* poly = run_polyhedron_creation();         // Start the process
@@ -255,6 +263,11 @@ int main() {
     front_view_projection(poly);       // Front view projection
     side_view_projection(poly);        // Side view projection
     test_cross_section_oblique(poly);  // Oblique cross-section
+    Vertex viewer_position = get_viewer_position();
+    classify_edge_visibility(poly->bsp_root, viewer_position);
+
+    // // Print results
+    // print_polyhedron_visibility(poly);  // Implement this to display visibility
         
     // Cleanup
     free(poly->vertices);

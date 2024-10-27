@@ -33,5 +33,7 @@ void top_view_projection(Polyhedron *poly);
 void front_view_projection(Polyhedron *poly);
 void side_view_projection(Polyhedron *poly);
 void cross_section_oblique(Polyhedron *poly, float px, float py, float pz, float nx, float ny, float nz);
+void classify_edge_visibility(BSPNode *node, Vertex viewer_position);
+
 
 #endif // POLYHEDRON_H
