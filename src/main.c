@@ -204,11 +204,23 @@ void test_scaling(Polyhedron *poly) {
     print_polyhedron(poly);
 }
 
+// Function to test translation
+void test_translation(Polyhedron *poly) {
+    float dx, dy, dz;
+    printf("Enter translation distances (dx dy dz): ");
+    scanf("%f %f %f", &dx, &dy, &dz);
+
+    translate_polyhedron(poly, dx, dy, dz);
+    printf("\n--- Polyhedron After Translation ---\n");
+    print_polyhedron(poly);
+}
+
 
 int main() {
     signal(SIGINT, handle_interrupt);  // Handle Ctrl+C gracefully
     Polyhedron* poly = run_polyhedron_creation();         // Start the process
     test_scaling(poly);
+    test_translation(poly);
         // Cleanup
     free(poly->vertices);
     free(poly->edges);

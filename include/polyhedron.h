@@ -27,4 +27,5 @@ int is_valid_vertex(Polyhedron *poly, float x, float y, float z);
 int is_valid_edge(Polyhedron *poly, int start, int end);
 int validate_euler(Polyhedron *poly);
 void scale_polyhedron(Polyhedron *poly, float scale_x, float scale_y, float scale_z) ;
+void translate_polyhedron(Polyhedron *poly, float dx, float dy, float dz); 
 #endif // POLYHEDRON_H

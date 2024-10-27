@@ -120,3 +120,17 @@ void scale_polyhedron(Polyhedron *poly, float scale_x, float scale_y, float scal
     }
     printf("Polyhedron scaled successfully.\n");
 }
+
+// Function to translate a polyhedron
+void translate_polyhedron(Polyhedron *poly, float dx, float dy, float dz) {
+    for (int i = 0; i < poly->vertex_count; i++) {
+        if (poly->vertices[i]) {  // Ensure vertex is allocated
+            poly->vertices[i]->x += dx;
+            poly->vertices[i]->y += dy;
+            poly->vertices[i]->z += dz;
+        } else {
+            printf("Warning: Attempting to translate an uninitialized vertex.\n");
+        }
+    }
+}
+
