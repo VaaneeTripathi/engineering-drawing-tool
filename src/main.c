@@ -43,7 +43,7 @@ int prompt_for_int(const char *prompt, int min, int max) {
     }
 }
 
-// Validate the minimum number of edges
+// Validate minimum edges for the given vertices
 int validate_minimum_edges(int vertex_count, int edge_count) {
     int min_edges = vertex_count - 1;
     if (edge_count < min_edges) {
@@ -54,7 +54,7 @@ int validate_minimum_edges(int vertex_count, int edge_count) {
     return 1;
 }
 
-// Validate the maximum number of edges for given vertices
+// Validate maximum edges based on vertices
 int validate_edge_count(int vertex_count, int edge_count) {
     int max_edges = (vertex_count * (vertex_count - 1)) / 2;
     if (edge_count > max_edges) {
@@ -64,78 +64,54 @@ int validate_edge_count(int vertex_count, int edge_count) {
     return 1;
 }
 
-// Command to handle scaling the polyhedron
-void handle_scale_command(Polyhedron *poly) {
-    float scale_x, scale_y, scale_z;
-    printf("Enter the scaling factors (scale_x scale_y scale_z): ");
-    scanf("%f %f %f", &scale_x, &scale_y, &scale_z);
-    scale_polyhedron(poly, scale_x, scale_y, scale_z);
-}
-
-
-// Main polyhedron creation function with "Go Back" functionality
+// Main polyhedron creation loop
 void run_polyhedron_creation() {
     int step = 1;  // Track the current step
+
     int vertex_count = 0, edge_count = 0, face_count = 0;
     Polyhedron *poly = NULL;
 
-    while (1) {
-
+    while (step <= 4) {
         switch (step) {
             case 1:
-                printf("\nWelcome to the Polyhedron Creation Tool!\n");
-                // Step 1: Get number of vertices
                 vertex_count = prompt_for_int("How many vertices?", 1, 100);
-                if (vertex_count < 3) {printf("Error: A polyhedron needs to have atleast 3 vertices\n");
-                    int choice = show_menu("What would you like to do?");
-                    if (choice == 1) { step = 1; continue; }  // Retry from start
-                    if (choice == 2) { step--; continue; }    // Go back
-                    if (choice == 3) exit(0);
-                }
-                if (vertex_count == -2) { step = 1; continue; }  // Retry
-                if (vertex_count == -1) { step = 1; continue; }  // Go back
-
-                step++;  // Move to the next step
+                if (vertex_count == -2) continue;  // Restart
+                if (vertex_count == -1) { step--; continue; }  // Go back
+                step++;  // Proceed to the next step
                 break;
 
             case 2:
-                // Step 2: Get number of edges
                 edge_count = prompt_for_int("How many edges?", 1, 200);
-                if (edge_count == -2) { step = 1; continue; }  // Retry
-                if (edge_count == -1) { step--; continue; }    // Go back
+                if (edge_count == -2) continue;
+                if (edge_count == -1) { step--; continue; }
 
-                // Validate edge count
                 if (!validate_edge_count(vertex_count, edge_count) ||
                     !validate_minimum_edges(vertex_count, edge_count)) {
                     int choice = show_menu("What would you like to do?");
-                    if (choice == 1) { step = 1; continue; }  // Retry from start
-                    if (choice == 2) { step--; continue; }    // Go back
+                    if (choice == 1) continue;  // Restart
+                    if (choice == 2) { step--; continue; }  // Go back
                     if (choice == 3) exit(0);
                 }
-                step++;  // Move to the next step
+                step++;
                 break;
 
             case 3:
-                // Step 3: Get number of faces
                 face_count = prompt_for_int("How many faces?", 1, 100);
-                if (face_count == -2) { step = 1; continue; }  // Retry
-                if (face_count == -1) { step--; continue; }    // Go back
+                if (face_count == -2) continue;
+                if (face_count == -1) { step--; continue; }
 
-                // Validate face count logic
                 if (face_count > edge_count) {
                     printf("Error: Faces cannot exceed the number of edges.\n");
                     int choice = show_menu("What would you like to do?");
-                    if (choice == 1) { step = 1; continue; }  // Retry from start
-                    if (choice == 2) { step--; continue; }    // Go back
+                    if (choice == 1) continue;
+                    if (choice == 2) { step--; continue; }
                     if (choice == 3) exit(0);
                 }
-                // Create the polyhedron
                 poly = create_polyhedron(vertex_count, edge_count, face_count);
-                step++;  // Move to the next step
+                step++;
                 break;
 
             case 4:
-                // Step 4: Input vertices
                 printf("\n--- Enter Vertex Coordinates ---\n");
                 for (int i = 0; i < vertex_count; i++) {
                     float x, y, z;
@@ -154,131 +130,74 @@ void run_polyhedron_creation() {
                         }
                     }
                 }
-                step++;  // Move to the next step
+                step++;
                 break;
+        }
+    }
 
-            case 5:
-                // Step 5: Input edges
-                printf("\n--- Define Edges ---\n");
-                for (int i = 0; i < edge_count; i++) {
-                    int start, end;
-                    while (1) {
-                        printf("Edge E%d (start end): ", i);
-                        if (scanf("%d %d", &start, &end) == 2 &&
-                            start != end && start >= 0 && end >= 0 &&
-                            start < vertex_count && end < vertex_count) {
-                            if (is_valid_edge(poly, start, end)) {
-                                printf("Duplicate edge detected. Try again.\n");
-                                continue;
-                            }
-                            add_edge(poly, start, end);
-                            break;
-                        } else {
-                            clear_input();
-                            printf("Invalid edge. Try again.\n");
-                        }
-                    }
-                }
-                step++;  // Move to the next step
-                break;
-
-            case 6:
-                // Step 6: Input faces
-                printf("\n--- Define Faces ---\n");
-                for (int i = 0; i < face_count; i++) {
-                    int edge_count;
-                    printf("How many edges in face F%d? ", i);
-                    scanf("%d", &edge_count);
-                    int *edges = (int *)malloc(edge_count * sizeof(int));
-
-                    for (int j = 0; j < edge_count; j++) {
-                        while (1) {
-                            printf("Edge index for face F%d: ", i);
-                            scanf("%d", &edges[j]);
-                            if (edges[j] >= 0 && edges[j] < poly->edge_count) {
-                                break;
-                            } else {
-                                printf("Invalid edge index. Try again.\n");
-                            }
-                        }
-                    }
-                    add_face(poly, edges, edge_count);
-                    free(edges);
-                }
-                step++;  // Move to the next step
-                break;
-
-            case 7:
-                // Step 7: Validate Euler's formula
-                if (!validate_euler(poly)) {
-                    printf("Error: Euler's formula not satisfied.\n");
-                    free(poly);
-                    step = 1;  // Restart on failure
+    // Proceed with edge and face input once vertices are entered
+    printf("\n--- Define Edges ---\n");
+    for (int i = 0; i < edge_count; i++) {
+        int start, end;
+        while (1) {
+            printf("Edge E%d (start end): ", i);
+            if (scanf("%d %d", &start, &end) == 2 &&
+                start != end && start >= 0 && end >= 0 &&
+                start < vertex_count && end < vertex_count) {
+                if (is_valid_edge(poly, start, end)) {
+                    printf("Duplicate edge detected. Try again.\n");
                     continue;
                 }
-
-                // Print polyhedron summary
-                printf("\n--- Polyhedron Summary ---\n");
-                print_polyhedron(poly);
-
-                // Clean up
-                free(poly->vertices);
-                free(poly->edges);
-                free(poly->faces);
-                free(poly);
-                return;  // Exit the function after successful completion
+                add_edge(poly, start, end);
+                break;
+            } else {
+                clear_input();
+                printf("Invalid edge. Try again.\n");
+            }
         }
-    }}
+    }
 
-void run_commands(Polyhedron* poly) {
-    while (1) {
-        const char *message;
-        int command = show_menu(message);
-        switch (command) {
-            case 1:
-                printf("Creating a new polyhedron...\n");
-                run_polyhedron_creation();
-                break;
-            case 2:
-                printf("Scaling polyhedron...\n");
-                float scale_x; float scale_y; float scale_z;
-                printf("Enter scale factor: ");
-                scanf("%f %f %f", &scale_x, &scale_y, &scale_z);
-                scale_polyhedron(poly, scale_x, scale_y, scale_z );
-                break;
-            // case 3:
-            //     printf("Translating polyhedron...\n");
-            //     float tx, ty, tz;
-            //     printf("Enter translation (x y z): ");
-            //     scanf("%f %f %f", &tx, &ty, &tz);
-            //     translate_polyhedron(poly, tx, ty, tz);
-            //     break;
-            // case 4:
-            //     printf("Rotating polyhedron...\n");
-            //     float angle, rx, ry, rz;
-            //     printf("Enter rotation angle (in degrees): ");
-            //     scanf("%f", &angle);
-            //     printf("Enter rotation axis (x y z): ");
-            //     scanf("%f %f %f", &rx, &ry, &rz);
-            //     rotate_polyhedron(poly, angle, rx, ry, rz);
-            //     break;
-            // case 5:
-            //     printf("Printing polyhedron...\n");
-            //     print_polyhedron(poly);
-            //     break;
-            // case 6:
-            //     printf("Exiting...\n");
-            //     free(poly);
-            //     exit(0);
-            default:
-                printf("Invalid command. Try again.\n");
-         } }
+    // Face input logic
+    printf("\n--- Define Faces ---\n");
+    for (int i = 0; i < face_count; i++) {
+        int edge_count;
+        printf("How many edges in face F%d? ", i);
+        scanf("%d", &edge_count);
+        int *edges = (int *)malloc(edge_count * sizeof(int));
+
+        for (int j = 0; j < edge_count; j++) {
+            while (1) {
+                printf("Edge index for face F%d: ", i);
+                scanf("%d", &edges[j]);
+                if (edges[j] >= 0 && edges[j] < poly->edge_count) {
+                    break;
+                } else {
+                    printf("Invalid edge index. Try again.\n");
+                }
+            }
+        }
+        add_face(poly, edges, edge_count);
+        free(edges);
+    }
+
+    if (!validate_euler(poly)) {
+        printf("Error: Euler's formula not satisfied.\n");
+        free(poly);
+        return;
+    }
+
+    printf("\n--- Polyhedron Summary ---\n");
+    print_polyhedron(poly);
+
+    // Cleanup
+    free(poly->vertices);
+    free(poly->edges);
+    free(poly->faces);
+    free(poly);
 }
 
 int main() {
     signal(SIGINT, handle_interrupt);  // Handle Ctrl+C gracefully
-    Polyhedron *poly = create_polyhedron(0, 0, 0);  // Initialize empty polyhedron
-    run_polyhedron_creation();
-    run_commands(poly);  // Start command execution
+    run_polyhedron_creation();         // Start the process
     return 0;
 }
