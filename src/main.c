@@ -216,12 +216,30 @@ void test_translation(Polyhedron *poly) {
 }
 
 
+// Function to test rotation
+void test_rotation(Polyhedron *poly) {
+    float angle;
+    char axis;
+
+    printf("Enter rotation angle in degrees: ");
+    scanf("%f", &angle);
+    printf("Enter axis of rotation (x, y, or z): ");
+    scanf(" %c", &axis);
+
+    rotate_polyhedron(poly, angle, axis);
+    printf("\n--- Polyhedron After Rotation ---\n");
+    print_polyhedron(poly);
+}
+
+
 int main() {
     signal(SIGINT, handle_interrupt);  // Handle Ctrl+C gracefully
     Polyhedron* poly = run_polyhedron_creation();         // Start the process
     test_scaling(poly);
     test_translation(poly);
-        // Cleanup
+    test_rotation(poly);      // Apply rotation
+        
+    // Cleanup
     free(poly->vertices);
     free(poly->edges);
     free(poly->faces);

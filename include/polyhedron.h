@@ -28,4 +28,5 @@ int is_valid_edge(Polyhedron *poly, int start, int end);
 int validate_euler(Polyhedron *poly);
 void scale_polyhedron(Polyhedron *poly, float scale_x, float scale_y, float scale_z) ;
 void translate_polyhedron(Polyhedron *poly, float dx, float dy, float dz); 
+void rotate_polyhedron(Polyhedron *poly, float angle, char axis);
 #endif // POLYHEDRON_H

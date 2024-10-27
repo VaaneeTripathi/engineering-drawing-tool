@@ -1,7 +1,12 @@
+#include <math.h>
 #include "../../include/polyhedron.h"
 #include "../../include/edge.h"
 #include <stdlib.h>
 #include <stdio.h>
+
+
+#define M_PI 3.14159265358979323846
+#define DEG_TO_RAD(angle) ((angle) * M_PI / 180.0)
 
 // Create a new polyhedron
 Polyhedron* create_polyhedron(int vertex_count, int edge_count, int face_count) {
@@ -134,3 +139,30 @@ void translate_polyhedron(Polyhedron *poly, float dx, float dy, float dz) {
     }
 }
 
+
+
+// Function to rotate a polyhedron
+void rotate_polyhedron(Polyhedron *poly, float angle, char axis) {
+    float rad = DEG_TO_RAD(angle);  // Convert angle to radians
+    float cos_theta = cos(rad);
+    float sin_theta = sin(rad);
+
+    for (int i = 0; i < poly->vertex_count; i++) {
+        if (poly->vertices[i]) {
+            float x = poly->vertices[i]->x;
+            float y = poly->vertices[i]->y;
+            float z = poly->vertices[i]->z;
+
+            if (axis == 'x' || axis == 'X') {  // Rotate around X-axis
+                poly->vertices[i]->y = y * cos_theta - z * sin_theta;
+                poly->vertices[i]->z = y * sin_theta + z * cos_theta;
+            } else if (axis == 'y' || axis == 'Y') {  // Rotate around Y-axis
+                poly->vertices[i]->x = x * cos_theta + z * sin_theta;
+                poly->vertices[i]->z = -x * sin_theta + z * cos_theta;
+            } else if (axis == 'z' || axis == 'Z') {  // Rotate around Z-axis
+                poly->vertices[i]->x = x * cos_theta - y * sin_theta;
+                poly->vertices[i]->y = x * sin_theta + y * cos_theta;
+            }
+        }
+    }
+}
