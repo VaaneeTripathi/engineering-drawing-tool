@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "../../include/bsp_node.h"
+#include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/polyhedron.h"
 
 BSPNode* create_node(Face *face, float plane[4]) {
     BSPNode *node = (BSPNode *)malloc(sizeof(BSPNode));

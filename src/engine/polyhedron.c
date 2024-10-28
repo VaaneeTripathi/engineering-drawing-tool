@@ -1,8 +1,8 @@
 #include <math.h>
-#include "../../include/polyhedron.h"
-#include "../../include/edge.h"
-#include "../../include/vertex.h"
-#include "../../include/polygon.h"
+#include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/polyhedron.h"
+#include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/edge.h"
+#include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/vertex.h"
+#include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/polygon.h"
 #include <stdlib.h>
 #include <stdio.h>
 

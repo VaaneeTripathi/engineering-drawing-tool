@@ -1,4 +1,4 @@
-#include "../../include/polygon.h"
+#include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/polygon.h"
 #include <math.h>
 
 // Function to calculate the normal vector of a polygon (assuming it's planar)
