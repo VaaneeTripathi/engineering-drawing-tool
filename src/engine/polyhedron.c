@@ -297,3 +297,49 @@ void print_visibility(Polyhedron *poly) {
         }
     }
 }
+
+// Function to detect holes in a given face
+int detect_holes_in_face(Face *face) {
+    int *visited = (int *)calloc(face->edge_count, sizeof(int));  // Track visited edges
+    int current_edge = 0;
+    int next_vertex = face->edges[current_edge]->end_index;
+    visited[current_edge] = 1;  // Mark the first edge as visited
+    int closed_loop = 1;
+
+    for (int i = 1; i < face->edge_count; i++) {
+        int found = 0;
+        for (int j = 0; j < face->edge_count; j++) {
+            if (!visited[j] && face->edges[j]->start_index == next_vertex) {
+                visited[j] = 1;
+                next_vertex = face->edges[j]->end_index;
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            closed_loop = 0;
+            printf("Hole detected in face with %d edges.\n", face->edge_count);
+            break;
+        }
+    }
+
+    if (closed_loop && face->edges[current_edge]->start_index != next_vertex) {
+        closed_loop = 0;
+        printf("Unconnected edges detected; face has a hole.\n");
+    }
+
+    free(visited);
+    return !closed_loop;  // Return 1 if a hole is detected, 0 otherwise
+}
+
+// Function to check all faces in a polyhedron for holes
+void detect_holes_in_polyhedron(Polyhedron *poly) {
+    for (int i = 0; i < poly->face_count; i++) {
+        Face *face = poly->faces[i];
+        if (detect_holes_in_face(face)) {
+            printf("Face %d has a hole.\n", i);
+        } else {
+            printf("Face %d has no holes.\n", i);
+        }
+    }
+}

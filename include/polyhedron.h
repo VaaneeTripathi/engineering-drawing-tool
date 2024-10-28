@@ -35,6 +35,7 @@ void side_view_projection(Polyhedron *poly);
 void cross_section_oblique(Polyhedron *poly, float px, float py, float pz, float nx, float ny, float nz);
 void classify_edge_visibility(BSPNode *node, Vertex viewer_position);
 void print_visibility(Polyhedron *poly);
-
+int detect_holes_in_face(Face *face);
+void detect_holes_in_polyhedron(Polyhedron *poly);
 
 #endif // POLYHEDRON_H
