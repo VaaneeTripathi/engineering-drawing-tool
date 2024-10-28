@@ -280,3 +280,20 @@ void classify_edge_visibility(BSPNode *node, Vertex viewer_position) {
         classify_edge_visibility(node->left, viewer_position);
     }
 }
+
+// Function to print the visibility status of each edge in the polyhedron
+void print_visibility(Polyhedron *poly) {
+    printf("\n--- Visibility Status of Polyhedron Edges ---\n");
+
+    for (int i = 0; i < poly->face_count; i++) {
+        Face *face = poly->faces[i];
+        printf("Face %d:\n", i);
+
+        for (int j = 0; j < face->edge_count; j++) {
+            Edge *edge = face->edges[j];
+            printf("  Edge %d (V%d -> V%d): %s\n", 
+                   j, edge->start_index, edge->end_index, 
+                   edge->is_visible ? "Visible" : "Hidden");
+        }
+    }
+}

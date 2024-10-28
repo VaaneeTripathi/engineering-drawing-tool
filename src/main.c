@@ -265,6 +265,7 @@ int main() {
     test_cross_section_oblique(poly);  // Oblique cross-section
     Vertex viewer_position = get_viewer_position();
     classify_edge_visibility(poly->bsp_root, viewer_position);
+    print_visibility(poly);
 
     // // Print results
     // print_polyhedron_visibility(poly);  // Implement this to display visibility
