@@ -7,15 +7,19 @@
 #include "bsp_node.h"
 
 
-typedef struct {
-    Vertex **vertices;   // List of pointers to vertices
-    Edge **edges;        // List of pointers to edges
-    Face **faces;        // List of pointers to faces
-    int vertex_count;    // Number of vertices
-    int edge_count;      // Number of edges
-    int face_count;      // Number of faces
-    BSPNode *bsp_root;   // Root of the BSP tree
+typedef struct Polyhedron {
+    char name[50];           // Name of the polyhedron
+    int vertex_count;
+    int edge_count;
+    int face_count;
+    int node_count;          // Number of BSP nodes, if needed
+    Vertex **vertices;       // Array of vertices
+    Edge **edges;            // Array of edges
+    Face **faces;            // Array of faces
+    BSPNode **bsp_nodes;     // Array of BSP nodes if using BSP tree
+    BSPNode *bsp_root;       // Root of BSP tree
 } Polyhedron;
+
 
 // Function prototypes
 Polyhedron* create_polyhedron(int vertex_count, int edge_count, int face_count);
@@ -32,7 +36,7 @@ void rotate_polyhedron(Polyhedron *poly, float angle, char axis);
 void top_view_projection(Polyhedron *poly);
 void front_view_projection(Polyhedron *poly);
 void side_view_projection(Polyhedron *poly);
-void cross_section_oblique(Polyhedron *poly, float px, float py, float pz, float nx, float ny, float nz);
+void cross_section_oblique(Polyhedron *poly);
 void classify_edge_visibility(BSPNode *node, Vertex viewer_position);
 void print_visibility(Polyhedron *poly);
 int detect_holes_in_face(Face *face);

@@ -195,7 +195,16 @@ void side_view_projection(Polyhedron *poly) {
 
 // Function to calculate cross-section with an oblique plane
 // Plane is defined by a point (px, py, pz) and a normal vector (nx, ny, nz)
-void cross_section_oblique(Polyhedron *poly, float px, float py, float pz, float nx, float ny, float nz) {
+void cross_section_oblique(Polyhedron *poly) {
+
+    float px;
+    float py;
+    float pz;
+    float nx; float ny;
+    float nz;
+
+    scanf("Enter a point on the plane: %f %f %f\n", &px, &py, &pz);
+    scanf("Enter the co-ordinates for the normal:%f %f %f\n", &nx, &ny, &nz);
     printf("\n--- Cross-Section at Oblique Angle ---\n");
     
     for (int i = 0; i < poly->edge_count; i++) {
