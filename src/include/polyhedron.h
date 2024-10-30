@@ -41,5 +41,14 @@ void classify_edge_visibility(BSPNode *node, Vertex viewer_position);
 void print_visibility(Polyhedron *poly);
 int detect_holes_in_face(Face *face);
 void detect_holes_in_polyhedron(Polyhedron *poly);
+Polyhedron *run_polyhedron_creation();
+void handle_interrupt(int sig);
+void clear_input();
+int show_menu(const char *message);
+int prompt_for_int(const char *prompt, int min, int max);
+int validate_minimum_edges(int vertex_count, int edge_count);
+int validate_edge_count(int vertex_count, int edge_count);
+Vertex get_viewer_position();
+
 
 #endif // POLYHEDRON_H

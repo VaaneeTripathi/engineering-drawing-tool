@@ -2,7 +2,7 @@
 #ifndef SAVE_FILE_H
 #define SAVE_FILE_H
 
-#include "../include/polyhedron.h"
+#include "polyhedron.h"
 
 typedef struct {
     char name[50];
@@ -28,6 +28,7 @@ typedef struct {
 
 void save_polyhedron_to_file(Polyhedron *poly, const char *filename);
 Polyhedron* load_polyhedron_from_file(const char *filename);
+void traverse_saved_files();
 
 #endif
 

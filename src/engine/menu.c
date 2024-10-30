@@ -56,24 +56,38 @@ void modify_existing_polyhedron(Polyhedron *poly) {
     int option;
     do {
         printf("\nChoose an operation for polyhedron '%s':\n", poly->name);
-        printf("1. Scale\n2. Translate\n3. Rotate\n4. Cross-section\n5. Projections\n6. Detect Holes\n7. Hidden Lines\n8. Save & Exit\n");
+        printf("1. Scale\n2. Translate\n3. Rotate\n4. Cross-section\n5. Orthographic Projections\n6. Detect Holes\n7. Hidden Lines\n8. Save & Exit\n");
         scanf("%d", &option);
 
         switch (option) {
             case 1:
-                test_scaling(poly);
+                float scale_x;
+                float scale_y;
+                float scale_z;
+                scanf("Enter scaling factors for x y z = %f %f %f\n", &scale_x, &scale_y, &scale_z);
+                scale_polyhedron(poly,scale_x, scale_y, scale_z);
                 break;
             case 2:
-                test_translation(poly);
+                float tx;
+                float ty;
+                float tz;
+                scanf("Enter translation values(x, y, z) = %f %f %f\n", &tx, &ty, &tz);
+                translate_polyhedron(poly, tx, ty, tz);
                 break;
             case 3:
-                test_rotation(poly);
+                float angle;
+                char axis;
+                scanf("Enter angle in degrees = %f\n", &angle);
+                scanf("Enter axis of rotation (x y z) = %s", &axis);
+                rotate_polyhedron(poly, angle, axis);
                 break;
             case 4:
                 cross_section_oblique(poly);
                 break;
             case 5:
                 top_view_projection(poly);
+                front_view_projection(poly);
+                side_view_projection(poly);
                 break;
             case 6:
                 detect_holes_in_polyhedron(poly);

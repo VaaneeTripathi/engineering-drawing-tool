@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <dirent.h>
 #include "../include/polyhedron.h"
 #include "../include/save_file.h"
 
@@ -83,4 +84,26 @@ Polyhedron* load_polyhedron_from_file(const char *filename) {
     fclose(file);
     printf("Polyhedron loaded from %s successfully.\n", filename);
     return poly;
+}
+
+void traverse_saved_files() {
+    const char *directory = "./saved_polyhedrons/";
+    DIR *dir = opendir(directory);
+
+    if (!dir) {
+        perror("Could not open directory");
+        return;
+    }
+
+    struct dirent *entry;
+    printf("\n--- Saved Polyhedron Files ---\n");
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_REG) { // Regular file
+            printf("%s\n", entry->d_name);
+        }
+    }
+
+    closedir(dir);
+    printf("\nEnd of saved files.\n");
 }

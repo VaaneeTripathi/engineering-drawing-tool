@@ -1,6 +1,6 @@
 // main.c
-#include "include/menu.h"  // New header for menu.c
-#include "include/polyhedron.h"  // Include paths may vary
+#include "include/polyhedron.h"  
+#include "include/menu.h" 
 
 int main() {
     welcome_user();
