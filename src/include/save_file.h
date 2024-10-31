@@ -11,6 +11,7 @@ typedef struct {
     int vertex_count;      // Number of vertices in the polyhedron
     int edge_count;        // Number of edges in the polyhedron
     int face_count;        // Number of faces in the polyhedron
+    int memory_size;
 } FileHeader;
 
 typedef struct {
@@ -29,6 +30,9 @@ typedef struct {
 void save_polyhedron_to_file(Polyhedron *poly, const char *filename);
 Polyhedron* load_polyhedron_from_file(const char *filename);
 void traverse_saved_files();
+void ensure_directory_exists(const char *directory);
+BSPNode* get_node_by_index(Polyhedron *poly, int index);
+Edge* get_edge_by_index(Polyhedron *poly, int index);
 
 #endif
 

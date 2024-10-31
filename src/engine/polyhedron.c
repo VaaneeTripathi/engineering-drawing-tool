@@ -3,8 +3,11 @@
 #include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/edge.h"
 #include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/vertex.h"
 #include "/home/vaanee/cs-coded/work/engineering-drawing-tool/src/include/polygon.h"
+#include "../include/save_file.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/stat.h> // For mkdir
+#include <string.h>
 
 
 #define M_PI 3.14159265358979323846
@@ -360,6 +363,10 @@ Polyhedron *run_polyhedron_creation() {
     int vertex_count = 0, edge_count = 0, face_count = 0;
     Polyhedron *poly = NULL;
 
+    char polyhedron_name[50];
+    printf("\nEnter a name for the new polyhedron: ");
+    scanf("%s", polyhedron_name);
+
     while (step <= 4) {
         switch (step) {
             case 1:
@@ -476,6 +483,38 @@ Polyhedron *run_polyhedron_creation() {
 
     printf("\n--- Polyhedron Summary ---\n");
     print_polyhedron(poly);
+
+    // Prompt user with options
+    char option;
+    do {
+        printf("\nOptions: [S] Save, [D] Discard, [R] Retry: ");
+        scanf(" %c", &option);
+
+        if (option == 'S' || option == 's') {
+            // Ensure the save directory exists
+            const char *directory = "./saved_polyhedrons/";
+            mkdir(directory, 0777);  // Creates the directory if it doesn't exist
+
+            // Save the polyhedron
+            char filepath[100];
+            snprintf(filepath, sizeof(filepath), "%s%s.poly", directory, polyhedron_name);
+            save_polyhedron_to_file(poly, filepath);
+            printf("Polyhedron '%s' saved to '%s'.\n", polyhedron_name, filepath);
+            return poly;
+
+        } else if (option == 'D' || option == 'd') {
+            printf("Polyhedron discarded.\n");
+            free(poly);
+            return NULL;
+
+        } else if (option == 'R' || option == 'r') {
+            printf("Retrying polyhedron creation...\n");
+            free(poly);
+            return run_polyhedron_creation();
+        } else {
+            printf("Invalid option. Please enter 'S', 'D', or 'R'.\n");
+        }
+    } while (option != 'S' && option != 'D' && option != 'R');
 
     return poly;
 }
