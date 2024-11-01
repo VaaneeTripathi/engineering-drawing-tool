@@ -56,32 +56,44 @@ void add_face(Polyhedron *poly, int *edge_indices, int edge_count) {
     poly->faces[poly->face_count++] = f;
 }
 
-// Print the polyhedron's structure
 void print_polyhedron(Polyhedron *poly) {
     printf("Polyhedron with %d vertices, %d edges, %d faces:\n", 
            poly->vertex_count, poly->edge_count, poly->face_count);
 
     printf("Vertices:\n");
     for (int i = 0; i < poly->vertex_count; i++) {
-        printf("V%d: (%.2f, %.2f, %.2f)\n", i,
-               poly->vertices[i]->x, poly->vertices[i]->y, poly->vertices[i]->z);
+        if (poly->vertices[i]) {  // Check for uninitialized vertices
+            printf("V%d: (%.2f, %.2f, %.2f)\n", i,
+                   poly->vertices[i]->x, poly->vertices[i]->y, poly->vertices[i]->z);
+        } else {
+            printf("V%d: (uninitialized)\n", i);
+        }
     }
 
     printf("Edges:\n");
     for (int i = 0; i < poly->edge_count; i++) {
-        printf("E%d: V%d -> V%d\n", i,
-               poly->edges[i]->start_index, poly->edges[i]->end_index);
+        if (poly->edges[i]) {  // Check for uninitialized edges
+            printf("E%d: V%d -> V%d\n", i,
+                   poly->edges[i]->start_index, poly->edges[i]->end_index);
+        } else {
+            printf("E%d: (uninitialized)\n", i);
+        }
     }
 
     printf("Faces:\n");
     for (int i = 0; i < poly->face_count; i++) {
-        printf("F%d: ", i);
-        for (int j = 0; j < poly->faces[i]->edge_count; j++) {
-            printf("E%d ", j);
+        if (poly->faces[i]) {  // Check for uninitialized faces
+            printf("F%d: ", i);
+            for (int j = 0; j < poly->faces[i]->edge_count; j++) {
+                printf("E%d ", j);
+            }
+            printf("\n");
+        } else {
+            printf("F%d: (uninitialized)\n", i);
         }
-        printf("\n");
     }
 }
+
 
 int is_valid_vertex(Polyhedron *poly, float x, float y, float z) {
     for (int i = 0; i < poly->vertex_count; i++) {
@@ -121,12 +133,20 @@ int validate_euler(Polyhedron *poly) {
     return 1;  // Valid
 }
 
-// Function to scale the polyhedron by a factor for each axis
 void scale_polyhedron(Polyhedron *poly, float scale_x, float scale_y, float scale_z) {
+    if (!poly || !poly->vertices) {
+        printf("Error: Polyhedron or vertices array not initialized.\n");
+        return;
+    }
+
     for (int i = 0; i < poly->vertex_count; i++) {
-        poly->vertices[i]->x *= scale_x;
-        poly->vertices[i]->y *= scale_y;
-        poly->vertices[i]->z *= scale_z;
+        if (poly->vertices[i]) {  // Check each vertex is initialized
+            poly->vertices[i]->x *= scale_x;
+            poly->vertices[i]->y *= scale_y;
+            poly->vertices[i]->z *= scale_z;
+        } else {
+            printf("Warning: Vertex %d is not initialized.\n", i);
+        }
     }
     printf("Polyhedron scaled successfully.\n");
 }

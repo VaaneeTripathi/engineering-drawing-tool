@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <dirent.h>
 #include "../include/save_file.h"
 #include "../include/menu.h"
 #include "../include/polyhedron.h"
@@ -14,9 +15,7 @@ void welcome_user() {
         printf("1. Create a new polyhedron\n");
         printf("2. Modify an existing polyhedron\n");
         printf("3. Traverse saved files\n");
-        printf("4. Save current polyhedron\n");
-        printf("5. Load a polyhedron from file\n");
-        printf("6. Exit\n");
+        printf("4. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -31,12 +30,6 @@ void welcome_user() {
                 traverse_saved_files();
                 break;
             case 4:
-                save_current_polyhedron(current_polyhedron);
-                break;
-            case 5:
-                current_polyhedron = load_polyhedron_from_file_menu();
-                break;
-            case 6:
                 printf("Exiting the program. Goodbye!\n");
                 if (current_polyhedron) free(current_polyhedron);
                 return;
@@ -46,40 +39,103 @@ void welcome_user() {
     }
 }
 
-// Function to modify an existing polyhedron
-void modify_existing_polyhedron(Polyhedron *poly) {
-    if (!poly) {
-        printf("No polyhedron loaded to modify.\n");
+// Function to list files in the saved directory and choose one to modify
+void modify_existing_polyhedron() {
+    // Directory where saved polyhedrons are stored
+    const char *directory = "./saved_polyhedrons/";
+
+    // Open the directory
+    DIR *dir = opendir(directory);
+    if (!dir) {
+        printf("Could not open saved polyhedron directory.\n");
         return;
     }
 
+    // Display the list of polyhedron files
+    struct dirent *entry;
+    int file_count = 0;
+    char filenames[100][256];  // To store file names, adjust size if necessary
+
+    printf("\nAvailable polyhedrons:\n");
+    while ((entry = readdir(dir)) != NULL) {
+        // Skip '.' and '..'
+        if (entry->d_name[0] == '.') continue;
+
+        snprintf(filenames[file_count], sizeof(filenames[file_count]), "%s", entry->d_name);
+        printf("%d. %s\n", file_count + 1, filenames[file_count]);
+        file_count++;
+    }
+    closedir(dir);
+
+    if (file_count == 0) {
+        printf("No saved polyhedrons available to modify.\n");
+        return;
+    }
+
+    // Prompt the user to select a polyhedron file
+    int choice;
+    printf("\nEnter the number of the polyhedron you wish to modify: ");
+    scanf("%d", &choice);
+
+    if (choice < 1 || choice > file_count) {
+        printf("Invalid selection.\n");
+        return;
+    }
+
+    // Build the full filepath and load the selected polyhedron
+    char filepath[300];
+    snprintf(filepath, sizeof(filepath), "%s%s", directory, filenames[choice - 1]);
+    Polyhedron *poly = load_polyhedron_from_file(filepath);
+    if (!poly) {
+        printf("Failed to load polyhedron from '%s'.\n", filepath);
+        return;
+    }
+
+    printf("Polyhedron '%s' loaded successfully.\n", poly->name);
+
+    // Modification menu
     int option;
     do {
         printf("\nChoose an operation for polyhedron '%s':\n", poly->name);
-        printf("1. Scale\n2. Translate\n3. Rotate\n4. Cross-section\n5. Orthographic Projections\n6. Detect Holes\n7. Hidden Lines\n8. Save & Exit\n");
+        printf("1. Scale\n2. Translate\n3. Rotate\n4. Cross-section\n5. Orthographic Projections\n");
+        printf("6. Detect Holes\n7. Hidden Lines\n8. Save & Exit\n");
+        printf("Enter option: ");
         scanf("%d", &option);
 
         switch (option) {
-            case 1:
-                float scale_x;
-                float scale_y;
-                float scale_z;
-                scanf("Enter scaling factors for x y z = %f %f %f\n", &scale_x, &scale_y, &scale_z);
-                scale_polyhedron(poly,scale_x, scale_y, scale_z);
-                break;
+        case 1:  // Scaling
+        float scale_x;
+        float scale_y;
+        float scale_z;
+            printf("Enter scaling factors for x y z: ");
+            if (scanf("%f %f %f", &scale_x, &scale_y, &scale_z) == 3) {
+                scale_polyhedron(poly, scale_x, scale_y, scale_z);
+                print_polyhedron(poly);
+            } else {
+                printf("Invalid input. Please enter three numbers.\n");
+            }
+            break;
             case 2:
                 float tx;
                 float ty;
                 float tz;
-                scanf("Enter translation values(x, y, z) = %f %f %f\n", &tx, &ty, &tz);
+            printf("Enter translation factors for x y z: ");
+            if (scanf("%f %f %f", &tx, &ty, &tz) == 3) {
                 translate_polyhedron(poly, tx, ty, tz);
-                break;
+                print_polyhedron(poly);
+            } else {
+                printf("Invalid input. Please enter three numbers.\n");
+            }
+            break;
             case 3:
                 float angle;
                 char axis;
-                scanf("Enter angle in degrees = %f\n", &angle);
-                scanf("Enter axis of rotation (x y z) = %s", &axis);
+                printf("Enter angle in degrees =");
+                scanf( "%f", &angle);
+                printf("Enter axis of rotation (x y z) = ")
+                scanf("%s", &axis);
                 rotate_polyhedron(poly, angle, axis);
+                print_polyhedron(poly);
                 break;
             case 4:
                 cross_section_oblique(poly);
@@ -106,18 +162,8 @@ void modify_existing_polyhedron(Polyhedron *poly) {
                 printf("Invalid option. Please try again.\n");
         }
     } while (option != 8);
-}
 
-// Prompts the user to enter a filename and saves the current polyhedron
-void save_current_polyhedron(Polyhedron *poly) {
-    if (!poly) {
-        printf("No polyhedron loaded to save.\n");
-        return;
-    }
-    char filename[50];
-    printf("Enter filename to save polyhedron: ");
-    scanf("%s", filename);
-    save_polyhedron_to_file(poly, filename);
+    free(poly);
 }
 
 // Prompts the user to load a polyhedron file
