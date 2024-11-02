@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <string.h>
 #include "../include/save_file.h"
 #include "../include/menu.h"
 #include "../include/polyhedron.h"
@@ -90,7 +91,7 @@ void modify_existing_polyhedron() {
         printf("Failed to load polyhedron from '%s'.\n", filepath);
         return;
     }
-
+    strcpy(poly->name, filenames[choice - 1]);
     printf("Polyhedron '%s' loaded successfully.\n", poly->name);
 
     // Modification menu
@@ -132,7 +133,7 @@ void modify_existing_polyhedron() {
                 char axis;
                 printf("Enter angle in degrees =");
                 scanf( "%f", &angle);
-                printf("Enter axis of rotation (x y z) = ")
+                printf("Enter axis of rotation (x y z) = ");
                 scanf("%s", &axis);
                 rotate_polyhedron(poly, angle, axis);
                 print_polyhedron(poly);

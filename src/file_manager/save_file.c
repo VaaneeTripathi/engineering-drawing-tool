@@ -12,11 +12,11 @@
 void ensure_directory_exists(const char *directory) {
     struct stat st = {0};
     if (stat(directory, &st) == -1) {
-        mkdir(directory, 0700);  // Create with rwx permissions for owner
+        mkdir(directory, 0777);  // Create with rwx permissions for owner
     }
 }
-void save_polyhedron_to_file(Polyhedron *poly, const char *filename) {
-    FILE *file = fopen(filename, "wb");
+void save_polyhedron_to_file(Polyhedron *poly, char filename[50]) {
+    FILE *file = fopen(filename, "w");
     if (!file) {
         perror("Failed to open file");
         return;
@@ -55,16 +55,17 @@ void save_polyhedron_to_file(Polyhedron *poly, const char *filename) {
     printf("Polyhedron saved to %s successfully.\n", filename);
 }
 
-
-Polyhedron* load_polyhedron_from_file(const char *filename) {
-    FILE *file = fopen(filename, "rb");
+Polyhedron* load_polyhedron_from_file(char filename[50]) {
+    FILE *file = fopen(filename, "r");
     if (!file) {
         perror("Failed to open file");
         return NULL;
     }
 
+
     Polyhedron *poly = (Polyhedron *)malloc(sizeof(Polyhedron));
     poly->bsp_nodes = NULL;
+    strcpy(filename,  poly->name);
 
     // Read header
     fscanf(file, "Polyhedron: %s\n", poly->name);
@@ -110,9 +111,6 @@ Polyhedron* load_polyhedron_from_file(const char *filename) {
     fclose(file);
     return poly;
 }
-
-
-
 
 void traverse_saved_files() {
     const char *directory = "saved_polyhedrons";

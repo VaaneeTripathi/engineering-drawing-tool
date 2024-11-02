@@ -27,8 +27,8 @@ typedef struct {
 } PolygonFile;
 
 
-void save_polyhedron_to_file(Polyhedron *poly, const char *filename);
-Polyhedron* load_polyhedron_from_file(const char *filename);
+void save_polyhedron_to_file(Polyhedron *poly, char filename[50]);
+Polyhedron* load_polyhedron_from_file(char filename[50]);
 void traverse_saved_files();
 void ensure_directory_exists(const char *directory);
 BSPNode* get_node_by_index(Polyhedron *poly, int index);

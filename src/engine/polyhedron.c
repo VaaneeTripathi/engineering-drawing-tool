@@ -219,44 +219,40 @@ void side_view_projection(Polyhedron *poly) {
 // Function to calculate cross-section with an oblique plane
 // Plane is defined by a point (px, py, pz) and a normal vector (nx, ny, nz)
 void cross_section_oblique(Polyhedron *poly) {
+    float px, py, pz, nx, ny, nz;
 
-    float px;
-    float py;
-    float pz;
-    float nx; float ny;
-    float nz;
+    // Prompt user for the point on the plane
+    printf("Enter a point on the plane (px py pz): ");
+    if (scanf("%f %f %f", &px, &py, &pz) != 3) {
+        printf("Invalid input for plane point.\n");
+        return;
+    }
 
-    scanf("Enter a point on the plane: %f %f %f\n", &px, &py, &pz);
-    scanf("Enter the co-ordinates for the normal:%f %f %f\n", &nx, &ny, &nz);
+    // Prompt user for the normal vector
+    printf("Enter the normal vector of the plane (nx ny nz): ");
+    if (scanf("%f %f %f", &nx, &ny, &nz) != 3) {
+        printf("Invalid input for normal vector.\n");
+        return;
+    }
+
     printf("\n--- Cross-Section at Oblique Angle ---\n");
     
     for (int i = 0; i < poly->edge_count; i++) {
         Vertex *v1 = poly->vertices[poly->edges[i]->start_index];
         Vertex *v2 = poly->vertices[poly->edges[i]->end_index];
 
-        // Debug print for vertices
-        printf("Edge %d: Start Vertex (%.2f, %.2f, %.2f), End Vertex (%.2f, %.2f, %.2f)\n", i, v1->x, v1->y, v1->z, v2->x, v2->y, v2->z);
-
-        // Direction vector of the edge
+        // Calculate the direction vector of the edge
         float dx = v2->x - v1->x;
         float dy = v2->y - v1->y;
         float dz = v2->z - v1->z;
 
-        // Print direction vector
-        printf("Direction vector of edge %d: (%.2f, %.2f, %.2f)\n", i, dx, dy, dz);
-
-        // Dot product to find the t parameter for the line-plane intersection
+        // Dot product for line-plane intersection
         float dot1 = nx * (px - v1->x) + ny * (py - v1->y) + nz * (pz - v1->z);
         float dot2 = nx * dx + ny * dy + nz * dz;
 
-        // Print dot products
-        printf("Edge %d: dot1 = %.2f, dot2 = %.2f\n", i, dot1, dot2);
-
-        if (fabs(dot2) > 1e-6) {  // Avoid division by zero
+        if (fabs(dot2) > 1e-6) {  // Check for non-parallel lines
             float t = dot1 / dot2;
-            printf("Edge %d: t = %.2f\n", i, t);
-
-            if (t >= 0.0 && t <= 1.0) {  // Intersection point lies on the edge
+            if (t >= 0.0 && t <= 1.0) {
                 float ix = v1->x + t * dx;
                 float iy = v1->y + t * dy;
                 float iz = v1->z + t * dz;
@@ -270,48 +266,54 @@ void cross_section_oblique(Polyhedron *poly) {
     }
 }
 
+
 // Function to classify edge visibility using the BSP tree
 void classify_edge_visibility(BSPNode *node, Vertex viewer_position) {
-    if (!node) return;
+    if (!node || !node->face) return;
+
+    // Ensure face properties are initialized
+    Face *face = node->face;
+    if (!face->edges || face->edge_count <= 0) {
+        printf("Warning: Face edges are uninitialized.\n");
+        return;
+    }
 
     // Calculate vector from face centroid to viewer position
-    Vertex normal = node->face->normal;  // Use face normal for orientation
+    Vertex normal = face->normal;  // Use face normal for orientation
     Vertex to_viewer = {
-        viewer_position.x - node->face->centroid.x,
-        viewer_position.y - node->face->centroid.y,
-        viewer_position.z - node->face->centroid.z
+        viewer_position.x - face->centroid.x,
+        viewer_position.y - face->centroid.y,
+        viewer_position.z - face->centroid.z
     };
 
     // Dot product to determine if the face is facing the viewer
     float dot_product = normal.x * to_viewer.x + normal.y * to_viewer.y + normal.z * to_viewer.z;
 
-    if (dot_product > 0) {  // If positive, face is toward the viewer
-        // Traverse the left (front) subtree first
+    if (dot_product > 0) {  // Face toward the viewer
         classify_edge_visibility(node->left, viewer_position);
 
         // Set all edges as visible for faces facing the viewer
-        for (int i = 0; i < node->face->edge_count; i++) {
-            node->face->edges[i]->is_visible = 1;  // Use -> to access is_visible
-            printf("Edge %d of face marked as visible.\n", i);
+        for (int i = 0; i < face->edge_count; i++) {
+            if (face->edges[i]) { // Ensure edge is initialized
+                face->edges[i]->is_visible = 1;
+                printf("Edge %d of face marked as visible.\n", i);
+            }
         }
-
-        // Traverse the right (back) subtree after processing the front
         classify_edge_visibility(node->right, viewer_position);
-
-    } else {  // If negative, face is away from the viewer
-        // Traverse the right (back) subtree first
+    } else {  // Face away from the viewer
         classify_edge_visibility(node->right, viewer_position);
 
         // Set all edges as hidden for faces facing away from the viewer
-        for (int i = 0; i < node->face->edge_count; i++) {
-            node->face->edges[i]->is_visible = 0;
-            printf("Edge %d of face marked as hidden.\n", i);
+        for (int i = 0; i < face->edge_count; i++) {
+            if (face->edges[i]) { // Ensure edge is initialized
+                face->edges[i]->is_visible = 0;
+                printf("Edge %d of face marked as hidden.\n", i);
+            }
         }
-
-        // Traverse the left (front) subtree after processing the back
         classify_edge_visibility(node->left, viewer_position);
     }
 }
+
 
 // Function to print the visibility status of each edge in the polyhedron
 void print_visibility(Polyhedron *poly) {
@@ -391,6 +393,9 @@ Polyhedron *run_polyhedron_creation() {
         switch (step) {
             case 1:
                 vertex_count = prompt_for_int("How many vertices?", 1, 100);
+                if (vertex_count < 3) {
+                    printf"The program needs atleast 3 vertices to build a polyhedron"
+                }
                 if (vertex_count == -2) continue;  // Restart
                 if (vertex_count == -1) { step--; continue; }  // Go back
                 step++;  // Proceed to the next step
@@ -434,6 +439,7 @@ Polyhedron *run_polyhedron_creation() {
                     while (1) {
                         printf("Vertex V%d (x y z): ", i);
                         if (scanf("%f %f %f", &x, &y, &z) == 3) {
+                            
                             if (is_valid_vertex(poly, x, y, z)) {
                                 printf("Duplicate vertex detected. Try again.\n");
                                 continue;
