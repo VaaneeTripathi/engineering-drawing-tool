@@ -6,6 +6,7 @@
 #include "../include/menu.h"
 #include "../include/polyhedron.h"
 #include "../include/properties.h"
+#include "../include/render_engine.h"
 
 // Function to display the main menu and handle user input
 void welcome_user() {
@@ -100,7 +101,7 @@ void modify_existing_polyhedron() {
     do {
         printf("\nChoose an operation for polyhedron '%s':\n", poly->name);
         printf("1. Scale\n2. Translate\n3. Rotate\n4. Cross-section\n5. Orthographic Projections\n");
-        printf("6. Detect Holes\n7. Hidden Lines\n8. Calculate Physical Properties\n9. Save & Exit\n");
+        printf("6. Detect Holes\n7. Hidden Lines\n8. Calculate Physical Properties\n9. Render\n10. Save & Exit\n");
         printf("Enter option: ");
         scanf("%d", &option);
 
@@ -159,7 +160,13 @@ void modify_existing_polyhedron() {
             case 8:{
                 calculate_polyhedron_properties(poly);
             }
-            case 9:
+            case 9: {
+                initializeOpenGL();
+                render_polyhedron(poly);
+                main_render_loop(poly);
+                
+            }
+            case 10:
                 save_polyhedron_to_file(poly, poly->name);
                 printf("Polyhedron saved and exiting modification.\n");
                 return;

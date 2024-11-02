@@ -1,0 +1,35 @@
+Polyhedron: ô³ÙZy
+Creation Date: Sat Nov  2 21:54:01 2024
+Vertices: 8 Edges: 12 Faces: 6 BSP Nodes: -1231331152
+Vertex 0: 0.00 1.00 0.00
+Vertex 1: 1.00 0.00 0.00
+Vertex 2: 1.00 0.00 1.00
+Vertex 3: 0.00 0.00 1.00
+Vertex 4: 0.00 3.00 0.00
+Vertex 5: 3.00 0.00 0.00
+Vertex 6: 3.00 0.00 3.00
+Vertex 7: 0.00 0.00 3.00
+Edge 0: Start 0 End 1
+Edge 1: Start 1 End 2
+Edge 2: Start 2 End 3
+Edge 3: Start 3 End 4
+Edge 4: Start 4 End 5
+Edge 5: Start 5 End 6
+Edge 6: Start 5 End 7
+Edge 7: Start 3 End 7
+Edge 8: Start 4 End 6
+Edge 9: Start 6 End 7
+Edge 10: Start 7 End 4
+Edge 11: Start 4 End 0
+Face 0: Edge Count 4
+0 1 2 3 
+Face 1: Edge Count 4
+2 3 4 5 
+Face 2: Edge Count 4
+3 4 5 5 
+Face 3: Edge Count 4
+4 5 5 3 
+Face 4: Edge Count 4
+5 5 3 4 
+Face 5: Edge Count 4
+5 3 4 6 
