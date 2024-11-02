@@ -394,7 +394,7 @@ Polyhedron *run_polyhedron_creation() {
             case 1:
                 vertex_count = prompt_for_int("How many vertices?", 1, 100);
                 if (vertex_count < 3) {
-                    printf"The program needs atleast 3 vertices to build a polyhedron"
+                    printf("The program needs atleast 3 vertices to build a polyhedron");
                 }
                 if (vertex_count == -2) continue;  // Restart
                 if (vertex_count == -1) { step--; continue; }  // Go back

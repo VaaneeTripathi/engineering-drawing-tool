@@ -1,0 +1,10 @@
+Polyhedron: test1.poly
+Creation Date: Sat Nov  2 21:21:15 2024
+Vertices: 3 Edges: 2 Faces: 1 BSP Nodes: 0
+Vertex 0: 0.00 0.00 0.00
+Vertex 1: 0.00 1.00 0.00
+Vertex 2: 0.00 1.00 1.00
+Edge 0: Start 0 End 1
+Edge 1: Start 1 End 2
+Face 0: Edge Count 2
+0 1 

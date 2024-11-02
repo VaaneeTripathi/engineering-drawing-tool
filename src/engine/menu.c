@@ -5,6 +5,7 @@
 #include "../include/save_file.h"
 #include "../include/menu.h"
 #include "../include/polyhedron.h"
+#include "../include/properties.h"
 
 // Function to display the main menu and handle user input
 void welcome_user() {
@@ -99,7 +100,7 @@ void modify_existing_polyhedron() {
     do {
         printf("\nChoose an operation for polyhedron '%s':\n", poly->name);
         printf("1. Scale\n2. Translate\n3. Rotate\n4. Cross-section\n5. Orthographic Projections\n");
-        printf("6. Detect Holes\n7. Hidden Lines\n8. Save & Exit\n");
+        printf("6. Detect Holes\n7. Hidden Lines\n8. Calculate Physical Properties\n9. Save & Exit\n");
         printf("Enter option: ");
         scanf("%d", &option);
 
@@ -155,14 +156,17 @@ void modify_existing_polyhedron() {
                 print_visibility(poly);
                 break;
             }
-            case 8:
+            case 8:{
+                calculate_polyhedron_properties(poly);
+            }
+            case 9:
                 save_polyhedron_to_file(poly, poly->name);
                 printf("Polyhedron saved and exiting modification.\n");
                 return;
             default:
                 printf("Invalid option. Please try again.\n");
         }
-    } while (option != 8);
+    } while (option != 9);
 
     free(poly);
 }

@@ -1,6 +1,8 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
-        "polyhedron.h": "c"
+        "polyhedron.h": "c",
+        "functional": "cpp",
+        "properties.h": "c"
     }
 }
