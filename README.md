@@ -80,6 +80,52 @@ Upon starting the Engineering Drawing Tool, you are presented with a main menu o
 
 ## Examples to Use
 
+```
+vaanee@tinkerbell:~/cs-coded/work/engineering-drawing-tool$ ./engineering_tool 
+
+--- Welcome to the 3D Polyhedron Tool ---
+1. Create a new polyhedron
+2. Modify an existing polyhedron
+3. Traverse saved files
+4. Exit
+Enter your choice: 1
+
+Enter a name for the new polyhedron: hello-world
+How many vertices? (between 1 and 100): 3
+How many edges? (between 1 and 200): 2
+How many faces? (between 1 and 100): 1
+
+--- Enter Vertex Coordinates ---
+Vertex V0 (x y z): 0 0 0
+Vertex V1 (x y z): 1 0 0
+Vertex V2 (x y z): 1 0 1
+
+--- Define Edges ---
+Edge E0 (start end): 0 1
+Edge E1 (start end): 1 2
+
+--- Define Faces ---
+How many edges in face F0? 2
+Edge index for face F0: 0 1
+Edge index for face F0: 
+--- Polyhedron Summary ---
+Polyhedron with 3 vertices, 2 edges, 1 faces:
+Vertices:
+V0: (0.00, 0.00, 0.00)
+V1: (1.00, 0.00, 0.00)
+V2: (1.00, 0.00, 1.00)
+Edges:
+E0: V0 -> V1
+E1: V1 -> V2
+Faces:
+F0: E0 E1 
+
+Options: [S] Save, [D] Discard, [R] Retry: S
+Polyhedron saved to ./saved_polyhedrons/hello-world.poly successfully.
+Polyhedron 'hello-world' saved to './saved_polyhedrons/hello-world.poly'.
+
+```
+
 ## MIT License 
 Copyright (c) [2024] [Vaanee Tripathi / Engineering Drawing Tool]
 
