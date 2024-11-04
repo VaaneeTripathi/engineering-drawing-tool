@@ -64,7 +64,39 @@ make run
 ```
 
 ## Workflow 
+Upon starting the Engineering Drawing Tool, you are presented with a main menu offering four primary options to manage and interact with polyhedrons. These options guide the workflow of creating, modifying, and managing polyhedron files.
 
-## Documentation
+### Main Menu Options
+**Create a New Polyhedron:** This option allows you to build a polyhedron from scratch by specifying vertices, edges, and faces. After defining these elements, you are prompted with the following choices:
+- Save: Save the created polyhedron to the file system.
+- Discard: Discard the current polyhedron without saving.
+- Retry: Start over, clearing all current inputs for vertices, edges, and faces.
 
-## License 
+**Modify Existing Polyhedron:** This option allows you to select a previously saved polyhedron and perform various operations on it. After selecting a polyhedron, a secondary menu appears with around nine modification options (e.g., scaling, rotating, translating). Each option may prompt you for specific parameters, such as axis of rotation, scaling factor, or translation vector, depending on the selected operation.
+
+**Traverse Saved Files:** This option allows you to browse through previously saved polyhedron files. You can view file names, details, and load any saved polyhedron into the tool for further modification or analysis.
+
+**Exit:** Select this option to safely exit the application.
+
+## Examples to Use
+
+## MIT License 
+Copyright (c) [2024] [Vaanee Tripathi / Engineering Drawing Tool]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
